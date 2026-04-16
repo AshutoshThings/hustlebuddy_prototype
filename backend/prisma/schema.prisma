@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String?
+  createdAt     DateTime @default(now())
+  profile       Profile?
+  applications  Application[]
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+  skills        Json
+  portfolio     String?
+  bio           String?
+  resumeText    String?
+}
+
+model Opportunity {
+  id            String   @id @default(cuid())
+  title         String
+  company       String
+  description   String
+  platform      String
+  link          String
+  deadline      DateTime?
+  createdAt     DateTime @default(now())
+  applications  Application[]
+}
+
+model Application {
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  opportunityId     String
+  opportunity       Opportunity @relation(fields: [opportunityId], references: [id])
+  generatedProposal String
+  status            String      @default("applied")
+  appliedAt         DateTime    @default(now())
+  responseDate      DateTime?
+}

@@ -1,0 +1,117 @@
+node_modules/
+**/node_modules/
+
+# Logs
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Editor files
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files
+
+.env
+.env.*
+!.env.example
+
+# ==============================
+
+# Backend specific
+
+# ==============================
+
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/coverage/
+backend/*.tsbuildinfo
+
+# Prisma database (local only)
+
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+
+# Backup files (you have one)
+
+backend/*.bak
+
+# ==============================
+
+# Frontend specific
+
+# ==============================
+
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+frontend/coverage/
+
+# ==============================
+
+# General build outputs
+
+# ==============================
+
+dist/
+build/
+coverage/
+.cache/
+*.tsbuildinfo
+
+# ==============================
+
+# Tooling / Deployment
+
+# ==============================
+
+.vercel/
+.netlify/
+.turbo/
+.nx/
+
+# ==============================
+
+# Misc
+
+# ==============================
+
+*.tgz
+*.tmp
+*.temp
+
+# ==============================
+
+# Lock files (IMPORTANT)
+
+# ==============================
+
+# Keep this if you're using npm (recommended)
+
+# DO NOT ignore this:
+
+# package-lock.json
+
+# If using yarn, ignore npm lock instead:
+
+# package-lock.json
+
+# If using pnpm, ignore others:
+
+# package-lock.json
+
+# yarn.lock
