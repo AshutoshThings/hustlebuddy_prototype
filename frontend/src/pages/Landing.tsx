@@ -210,6 +210,12 @@ export default function Landing() {
       desc: "See what actually worked for other students (anonymously shared)" 
     }
   ];
+  useEffect(() => {
+    const token = localStorage.getItem('hb_token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   return (
     <div className="bg-[#030303] text-white font-sans min-h-screen overflow-x-hidden">
@@ -564,7 +570,7 @@ export default function Landing() {
 
       <footer className="bg-[#000] text-white py-16 px-6 md:px-12 lg:px-24 border-t border-white/10">
         <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-sm">
-          <div className="font-semibold tracking-tight text-xl text-white/90">HustleBuddy.</div>
+          <div className="font-semibold tracking-tight text-xl text-white/90">HustleBuddy</div>
           
           <div className="flex flex-wrap gap-x-8 gap-y-2 text-slate-500 font-medium tracking-[0.1em] uppercase text-[10px]">
             <button onClick={() => navigate('/login')} className="hover:text-white transition-colors">Platform</button>
