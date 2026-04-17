@@ -306,7 +306,7 @@ export default function Landing() {
               </FadeIn>
               <FadeIn delay={0.3} className="h-full">
                 <TiltCard className="bg-[#0A0A0A] border border-white/5 rounded-2xl p-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] h-full cursor-default">
-                  <CountUp end={2} suffix="-3 hr" />
+                  <CountUp end={4} suffix="-5 hr" />
                   <div className="text-slate-300 text-sm font-medium mb-1">Lost every week on applications</div>
                   <p className="text-slate-600 text-xs tracking-wide">REPETITIVE FORMS</p>
                 </TiltCard>
@@ -402,7 +402,6 @@ export default function Landing() {
               </div>
             </div>
           </div>
-          <p className="text-center text-slate-500 text-sm mt-12 max-w-md mx-auto">Real numbers from students who switched to HustleBuddy in the last 3 months.</p>
         </div>
       </section>
 
