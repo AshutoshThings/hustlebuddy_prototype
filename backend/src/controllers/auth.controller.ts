@@ -19,6 +19,7 @@ export const registerUser = async (req: Request, res: Response): Promise<any> =>
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    
     const insertQuery = `
       INSERT INTO users (email, password, name) 
       VALUES ($1, $2, $3) 

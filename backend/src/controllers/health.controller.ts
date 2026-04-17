@@ -6,7 +6,7 @@ export const checkHealth = async (req: Request, res: Response) => {
     const dbRes = await pool.query('SELECT NOW()');
     res.json({ 
       status: 'ok', 
-      message: 'Modular HustleBuddy Backend is live!', 
+      message: 'HustleBuddy Backend is live and connected to the database', 
       dbTime: dbRes.rows[0].now 
     });
   } catch (error) {
