@@ -1,80 +1,96 @@
-import { motion } from 'framer-motion';
-import { LayoutDashboard, Zap, FolderSearch, Settings, LogOut } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { ReactNode } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Home, Sparkles, Database, Settings, LogOut, Command, Search,FileUser, Briefcase,Bell } from 'lucide-react';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const navigate = useNavigate();
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('hb_user') || '{"name": "Ashutosh"}');
 
-  const menuItems = [
-    { icon: <LayoutDashboard size={18} />, label: 'Smart Feed', path: '/dashboard' },
-    { icon: <Zap size={18} />, label: 'Sarvam Engine', path: '/dashboard/engine' },
-    { icon: <FolderSearch size={18} />, label: 'Proposal Vault', path: '/dashboard/vault' },
+  const navigation = [
+    { name: 'Home', path: '/dashboard', icon: Home },
+    { name: 'Drafting Engine', path: '/dashboard/engine', icon: Sparkles },
+    { name: 'My Applications', path: '/dashboard/applications', icon: Briefcase },
+    { name: 'Resume & Profile', path: '/dashboard/resume', icon: FileUser },
+    { name: 'Community Vault', path: '/dashboard/vault', icon: Database },
   ];
 
   return (
-    <div className="flex h-screen bg-white text-slate-900 font-sans overflow-hidden">
-      {/* Sidebar - Sarvam Style (Light Gray) */}
-      <aside className="w-64 border-r border-slate-100 flex flex-col p-6 bg-[#F9FAFB]">
-        <div className="text-xl font-bold tracking-tighter mb-12 flex items-center gap-2 text-indigo-600">
-          hustlebuddy<span className="text-slate-900">.</span>
+    <div className="flex h-screen bg-[#F8F9FA] font-sans text-slate-900 antialiased">
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-slate-200/60 flex flex-col h-full bg-white shadow-[1px_0_0_rgba(0,0,0,0.02)]">
+        <div className="p-6 pb-2">
+          <Link to="/" className="group flex items-center gap-2.5">
+            <span className="text-lg font-bold tracking-tight">HustleBuddy</span>
+          </Link>
         </div>
 
-        <nav className="flex-1 space-y-1">
-          {menuItems.map((item) => {
+        <nav className="flex-1 px-3 mt-6 space-y-1">
+          {navigation.map((item) => {
             const isActive = location.pathname === item.path;
             return (
-              <button
-                key={item.label}
-                onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-all ${
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-all ${
                   isActive 
-                  ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' 
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                    ? 'bg-slate-100 text-slate-900' 
+                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
                 }`}
               >
-                {item.icon}
-                {item.label}
-              </button>
+                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                {item.name}
+              </Link>
             );
           })}
         </nav>
 
-        <div className="pt-6 border-t border-slate-200 space-y-1">
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">
-            <Settings size={18} /> Settings
-          </button>
-          <button onClick={() => navigate('/')} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-500/70 hover:text-red-600 transition-colors">
-            <LogOut size={18} /> Sign Out
-          </button>
+        <div className="p-4 mt-auto">
+          <div className="bg-slate-50 rounded-xl p-4 border border-slate-200/60">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 bg-white border border-slate-200 rounded-full flex items-center justify-center text-sm font-bold shadow-sm">
+                {user.name.charAt(0)}
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <p className="text-xs font-bold truncate">{user.name}</p>
+                <p className="text-[10px] text-slate-500 truncate">Free Plan</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => { localStorage.clear(); navigate('/login'); }}
+              className="w-full py-2 bg-white border border-slate-200 rounded-lg text-[11px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600 transition-all flex items-center justify-center gap-2"
+            >
+              <LogOut size={12} /> Sign Out
+            </button>
+          </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Header */}
-        <header className="h-16 border-b border-slate-100 flex items-center justify-between px-8 bg-white z-10">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">Systems Nominal</span>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <header className="h-14 border-b border-slate-200/60 bg-white/80 backdrop-blur-md flex items-center justify-between px-8">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 py-1 px-2.5 bg-slate-100 rounded-md text-[11px] font-mono text-slate-500 border border-slate-200/50">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              v1.0.4-stable
+            </div>
           </div>
           
-          <div className="flex items-center gap-4">
-             <div className="text-right hidden md:block">
-                <p className="text-xs font-bold text-slate-900 uppercase">Ashutosh V.</p>
-                <p className="text-[10px] text-indigo-500 font-mono font-bold uppercase tracking-tight">Pro Member</p>
-             </div>
-             <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-indigo-600">
-                AV
-             </div>
+          <div className="flex items-center gap-3">
+            <button className="p-2 text-slate-400 hover:text-slate-600 transition-colors relative">
+              <Bell size={18} />
+              <span className="absolute top-2 right-2.5 w-1.5 h-1.5 bg-indigo-500 rounded-full border-2 border-white" />
+            </button>
+            <div className="h-4 w-px bg-slate-200 mx-1" />
+            <kbd className="hidden sm:flex items-center gap-1 px-2 py-1 bg-slate-50 border border-slate-200 rounded text-[10px] font-mono text-slate-400">
+              <span className="text-xs">⌘</span>K
+            </kbd>
           </div>
         </header>
 
-        {/* Content Container */}
-        <section className="flex-1 overflow-y-auto bg-[#FCFCFD] p-8">
+        <main className="flex-1 overflow-y-auto custom-scrollbar">
           {children}
-        </section>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
