@@ -228,9 +228,6 @@ export default function Landing() {
         
         <div className="max-w-[1600px] mx-auto relative z-10">
           <FadeIn className="text-center mb-24">
-            <span className="px-3 py-1 rounded-full border border-white/10 bg-white/5 text-[10px] font-mono tracking-[0.2em] uppercase text-slate-400 mb-6 inline-block">
-              Technology Deep Dive
-            </span>
             <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-white/90">Why Sarvam AI?</h2>
             <p className="text-slate-500 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed">We integrated India's most powerful language model to ensure your applications sound human, professional, and culturally aware.</p>
           </FadeIn>
