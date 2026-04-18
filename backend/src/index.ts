@@ -7,6 +7,7 @@ import healthRoutes from './routes/health.routes';
 import authRoutes from './routes/auth.routes';
 import aiRoutes from './routes/ai.routes';
 import applicationRoutes from './routes/application.routes';
+import jobs from './routes/jobs.routes';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use('/health', healthRoutes);
 app.use('/auth', authRoutes);
 app.use('/ai', aiRoutes); 
 app.use('/applications', applicationRoutes);
+app.use('/jobs', jobs);
 
 // Server Start 
 app.listen(port, () => {
