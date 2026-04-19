@@ -81,7 +81,6 @@ const ContextIcon = () => (
     <path d="M16 13H8" />
     <path d="M16 17H8" />
     <path d="M10 9H8" />
-    {/* Abstract AI Context Nodes */}
     <circle cx="16" cy="13" r="2" fill="currentColor" className="opacity-40" />
     <circle cx="14" cy="17" r="2" fill="currentColor" className="opacity-80" />
   </svg>
@@ -94,7 +93,6 @@ const SpeedIcon = () => (
     <path d="M5 3L2 6" />
     <path d="M19 3l3 3" />
     <path d="M12 2v2" />
-    {/* Speed lines */}
     <path d="M1 18h2" />
     <path d="M21 18h2" />
   </svg>
@@ -187,29 +185,30 @@ export default function Landing() {
     { 
       num: "01", 
       title: "Build your profile once", 
-      desc: "Skills, projects, and portfolio — done in under a minute" 
+      desc: "Upload your resume, skills, projects — that's it. Takes under a minute" 
     },
     { 
       num: "02", 
-      title: "All opportunities in one feed", 
-      desc: "Internshala, Unstop, LinkedIn, Indeed, Wellfound and others" 
+      title: "Scout Agent finds jobs", 
+      desc: "It quietly checks Internshala, Unstop, Wellfound and others for stuff that actually matches you" 
     },
     { 
       num: "03", 
-      title: "AI writes your applications", 
-      desc: "Sarvam creates proposals that actually sound like you" 
+      title: "AI team gets to work", 
+      desc: "One agent writes your proposal, another checks how good your chances are" 
     },
     { 
       num: "04", 
-      title: "Apply with one click", 
-      desc: "Submit and track everything from the same dashboard" 
+      title: "Apply Agent does the rest", 
+      desc: "One click in the Chrome extension — it fills everything and submits like a real person" 
     },
     { 
       num: "05", 
-      title: "Community Vault", 
-      desc: "See what actually worked for other students (anonymously shared)" 
+      title: "Track everything in one place", 
+      desc: "See all your applications and what worked for other students" 
     }
   ];
+
   useEffect(() => {
     const token = localStorage.getItem('hb_token');
     if (token) {
@@ -255,21 +254,21 @@ export default function Landing() {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.5 }}
             className="text-xl md:text-2xl text-slate-500 max-w-3xl leading-relaxed font-light"
           >
-            We built a tool that handles all the boring parts of internship hunting for Indian students. 
-            No more copying-pasting the same details 20 times a day. Just focus on your projects and studies - we take care of the forms.
+            You know the drill — opening Internshala, Unstop, Wellfound, LinkedIn… copy-pasting the same stuff 20 times a day, filling the same forms again and again. It’s exhausting.
+            We built HustleBuddy so you don’t have to do any of that anymore.
           </motion.p>
 
          <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}
             className="inline-flex items-center gap-3 px-4 mt-4 py-1.5 bg-[#111] border border-white/10 rounded-full text-[11px] font-mono tracking-[0.2em] uppercase mb-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] text-slate-400"
           >
-            Opportunities Found. Application Done.
+            One profile. Agents apply for you.
           </motion.div>
 
           <motion.button
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }}
             onClick={() => navigate('/login')}
-            className="mt-8 px-8 py-4 bg-white text-black text-lg font-medium rounded-full hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 shadow-[inset_0_-3px_10px_rgba(0,0,0,0.15),0_10px_30px_rgba(255,255,255,0.1)]"
+            className="mt-6 px-8 py-4 bg-white text-black text-lg font-medium rounded-full hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 shadow-[inset_0_-3px_10px_rgba(0,0,0,0.15),0_10px_30px_rgba(255,255,255,0.1)]"
           >
             Open my dashboard
             <span className="text-xl opacity-50 relative top-[1px]">→</span>
@@ -281,7 +280,6 @@ export default function Landing() {
           <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} className="text-lg mt-2 font-light">↓</motion.div>
         </motion.div>
       </section>
-
       {/* --- STATS SECTION --- */}
       <section className="py-32 px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto border-t border-white/5">
         <div className="flex flex-col lg:flex-row gap-20">
@@ -322,7 +320,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* --- COMPARISON SECTION --- */}
       <section className="py-20 px-6 md:px-12 lg:px-24 bg-[#0A0A0A]">
         <div className="max-w-[1600px] mx-auto">
           <FadeIn>
@@ -480,17 +477,16 @@ export default function Landing() {
                 <TiltCard className="rounded-[2rem] p-12 border border-current/5 bg-current/5 h-full cursor-default">
                   <span className="uppercase text-[10px] tracking-[0.2em] font-semibold opacity-50">Smart Feed</span>
                   <h3 className="text-3xl font-medium mt-4 mb-4 tracking-tight">All platforms. One place.</h3>
-                  <p className="text-lg font-light opacity-60">Internshala • Unstop • wellfound (and various other platforms)</p>
+                  <p className="text-lg font-light opacity-60">Internshala • Unstop • Wellfound and more — your Scout Agent brings everything here</p>
                 </TiltCard>
               </FadeIn>
 
-              {/* This card stays visually dark for contrast */}
               <FadeIn delay={0.2} className="md:col-span-5 h-full">
                 <TiltCard className="bg-[#0A0A0A] text-white rounded-[2rem] p-12 shadow-2xl relative overflow-hidden h-full cursor-default">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full" />
-                  <span className="uppercase text-[10px] tracking-[0.2em] font-semibold text-indigo-400">Powered by Sarvam</span>
-                  <h3 className="text-3xl font-medium mt-4 mb-4 tracking-tight text-white/90">Applications that don’t sound like AI</h3>
-                  <p className="text-slate-400 text-lg font-light">Sarvam writes proposals the way you would — natural, professional, and Indian.</p>
+                  <span className="uppercase text-[10px] tracking-[0.2em] font-semibold text-indigo-400">Powered by Sarvam Arya</span>
+                  <h3 className="text-3xl font-medium mt-4 mb-4 tracking-tight text-white/90">Real AI that actually helps</h3>
+                  <p className="text-slate-400 text-lg font-light">Four agents work together — they write stuff that sounds like you, not like ChatGPT</p>
                 </TiltCard>
               </FadeIn>
 
@@ -499,7 +495,7 @@ export default function Landing() {
                   <div className="flex-1">
                     <span className="uppercase text-[10px] tracking-[0.2em] font-semibold opacity-50">Community Vault</span>
                     <h3 className="text-3xl font-medium mt-4 mb-4 tracking-tight">Real applications that actually worked</h3>
-                    <p className="text-lg font-light max-w-2xl opacity-60">Students share what got them interviews. You learn from real recruiter feedback instead of guessing.</p>
+                    <p className="text-lg font-light max-w-2xl opacity-60">Students share what got them interviews. You (and the AI) learn from real examples instead of guessing</p>
                   </div>
                 </TiltCard>
               </FadeIn>
@@ -507,28 +503,24 @@ export default function Landing() {
           </div>
         </section>
       </motion.div>
-      {/* --- END CARD POP WRAPPER --- */}
 
-      {/* --- MAIN DARK THEME (WHY SARVAM) --- */}
       <section className="bg-[#030303] text-white py-32 px-6 md:px-12 lg:px-24 border-t border-white/5 relative overflow-hidden mt-16">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:48px_48px] pointer-events-none" />
         
         <div className="max-w-[1600px] mx-auto relative z-10">
           <FadeIn className="text-center mb-24">
-            <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-white/90">Why we chose Sarvam (and not ChatGPT)</h2>
-            <p className="text-slate-500 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed">We didn’t want your applications to sound like every other AI-generated one. So we built on Sarvam - India’s own large language model that actually understands how we speak and how recruiters here think.</p>
+            <h2 className="text-4xl md:text-5xl font-medium tracking-tight text-white/90">Why we chose Sarvam Arya (and not ChatGPT)</h2>
+            <p className="text-slate-500 mt-6 text-lg max-w-2xl mx-auto font-light leading-relaxed">We didn’t want your applications to sound like every other AI-generated one. Sarvam was trained on how Indians actually speak, so the proposals feel natural to recruiters here.</p>
           </FadeIn>
 
           <div className="grid md:grid-cols-3 gap-6">
-            
-            {/* The 3D TiltCards for the final section */}
             <FadeIn delay={0.1} className="h-full">
               <TiltCard className="bg-[#0A0A0A] border border-white/5 p-10 rounded-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] h-full flex flex-col items-start cursor-default">
                 <div className="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center mb-8">
                   <LanguageIcon />
                 </div>
                 <h3 className="text-xl font-medium mb-3 text-white/90">It speaks like us</h3>
-                <p className="text-slate-500 leading-relaxed font-light text-sm">Most AIs sound too American or too robotic. Sarvam was trained on Indian English and Hinglish, so the tone feels natural to Indian recruiters.</p>
+                <p className="text-slate-500 leading-relaxed font-light text-sm">No American English or robotic tone. It understands Hinglish and the way we actually write.</p>
               </TiltCard>
             </FadeIn>
 
@@ -537,8 +529,8 @@ export default function Landing() {
                 <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/20 rounded-xl flex items-center justify-center mb-8">
                   <ContextIcon />
                 </div>
-                <h3 className="text-xl font-medium mb-3 text-white/90">It reads the description</h3>
-                <p className="text-slate-500 leading-relaxed font-light text-sm">It doesn’t just fill in blanks. It understands what the company is really looking for and highlights the right parts of your profile.</p>
+                <h3 className="text-xl font-medium mb-3 text-white/90">It actually understands the job</h3>
+                <p className="text-slate-500 leading-relaxed font-light text-sm">It reads the internship description and highlights the exact parts of your profile that matter.</p>
               </TiltCard>
             </FadeIn>
 
@@ -548,10 +540,9 @@ export default function Landing() {
                   <SpeedIcon />
                 </div>
                 <h3 className="text-xl font-medium mb-3 text-white/90">Done in seconds</h3>
-                <p className="text-slate-500 leading-relaxed font-light text-sm">Generate → review → apply. The whole thing takes less than 30 seconds once your profile is ready.</p>
+                <p className="text-slate-500 leading-relaxed font-light text-sm">Upload profile → see matches → click one button → the Apply Agent handles everything.</p>
               </TiltCard>
             </FadeIn>
-
           </div>
         </div>
       </section>
@@ -574,7 +565,7 @@ export default function Landing() {
           
           <div className="flex flex-wrap gap-x-8 gap-y-2 text-slate-500 font-medium tracking-[0.1em] uppercase text-[10px]">
             <button onClick={() => navigate('/login')} className="hover:text-white transition-colors">Platform</button>
-            <button onClick={() => navigate('/login')} className="hover:text-white transition-colors">Sarvam Engine</button>
+            <button onClick={() => navigate('/login')} className="hover:text-white transition-colors">Sarvam Arya Agents</button>
             <button onClick={() => navigate('/login')} className="hover:text-white transition-colors">Vault</button>
             <a href="#" className="hover:text-white transition-colors">Support</a>
           </div>
