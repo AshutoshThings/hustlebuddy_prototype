@@ -65,7 +65,7 @@ export default function Login() {
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center mb-6 text-2xl font-bold tracking-tight text-slate-900">
-            Hustlebuddy<span className="text-indigo-600"></span>
+            HustleBuddy<span className="text-indigo-600"></span>
           </div>
           <h2 className="mt-2 text-center text-2xl font-semibold tracking-tight text-slate-900">
             Log in to your account

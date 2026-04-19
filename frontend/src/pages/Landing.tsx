@@ -480,7 +480,7 @@ export default function Landing() {
                 <TiltCard className="rounded-[2rem] p-12 border border-current/5 bg-current/5 h-full cursor-default">
                   <span className="uppercase text-[10px] tracking-[0.2em] font-semibold opacity-50">Smart Feed</span>
                   <h3 className="text-3xl font-medium mt-4 mb-4 tracking-tight">All platforms. One place.</h3>
-                  <p className="text-lg font-light opacity-60">Internshala • Unstop • LinkedIn • Indeed • wellfound</p>
+                  <p className="text-lg font-light opacity-60">Internshala • Unstop • wellfound (and various other platforms)</p>
                 </TiltCard>
               </FadeIn>
 

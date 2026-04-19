@@ -71,7 +71,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 py-1 px-2.5 bg-slate-100 rounded-md text-[11px] font-mono text-slate-500 border border-slate-200/50">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              v1.0.4-stable
+              prototype version 1.0
             </div>
           </div>
           

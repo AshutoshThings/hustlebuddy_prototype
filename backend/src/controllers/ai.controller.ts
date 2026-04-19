@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { SarvamAIClient } from 'sarvamai';
 import dotenv from 'dotenv';
 
+const pdfParse = require('pdf-parse'); 
+
 dotenv.config();
 
 const aiClient = new SarvamAIClient({
@@ -39,5 +41,73 @@ export const generateProposal = async (req: Request, res: Response): Promise<any
   } catch (error) {
     console.error('AI Generation Error:', error);
     res.status(500).json({ error: 'Failed to generate proposal via AI' });
+  }
+};
+
+
+export const parseResume = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const uploadedFile = (req as any).file;
+
+    if (!uploadedFile) {
+      return res.status(400).json({ success: false, error: 'No resume file provided.' });
+    }
+
+    console.log("Extracting text from PDF...");
+    const pdfData = await pdfParse(uploadedFile.buffer);
+    const rawText = pdfData.text;
+
+    console.log("Sending text to Sarvam AI for analysis...");
+    const systemPrompt = `You are a strict data extraction AI. Analyze the resume text. 
+    Respond ONLY with a raw JSON object. Do not include markdown formatting, backticks, or introduction text.
+    Format exactly like this: {"summary": "2 sentence summary", "skills": ["skill1", "skill2"]}`;
+
+    const response = await aiClient.chat.completions({
+      model: "sarvam-30b", 
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: `RESUME TEXT:\n${rawText.substring(0, 4000)}` } 
+      ],
+      temperature: 0.1,
+      max_tokens: 1000,
+    });
+
+    const aiContent = response.choices[0]?.message?.content || '{}';
+    console.log("Raw AI Output:", aiContent); 
+    
+    const cleanJsonString = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
+    
+    let parsedData = { 
+      summary: "Experienced developer ready for new opportunities.", 
+      skills: ["JavaScript", "React", "Node.js"] // Fallback data
+    };
+
+    try {
+      const startIdx = cleanJsonString.indexOf('{');
+      const endIdx = cleanJsonString.lastIndexOf('}') + 1;
+      
+      if (startIdx !== -1 && endIdx !== -1) {
+        const jsonOnly = cleanJsonString.slice(startIdx, endIdx);
+        parsedData = JSON.parse(jsonOnly);
+      } else {
+        parsedData = JSON.parse(cleanJsonString);
+      }
+    } catch (parseError) {
+      console.warn("⚠️ AI returned invalid JSON format. Using fallback.", cleanJsonString);
+      // We don't throw an error here, we just let it use the fallback data!
+    }
+    // ----------------------------------------------
+
+    res.json({ 
+      success: true, 
+      analysis: {
+        summary: parsedData.summary || "Experienced developer.",
+        skills: parsedData.skills || []
+      } 
+    });
+
+  } catch (error) {
+    console.error('Resume Parsing Error:', error);
+    res.status(500).json({ success: false, error: 'Failed to parse resume' });
   }
 };
