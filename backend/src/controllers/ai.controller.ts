@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { SarvamAIClient } from 'sarvamai';
 import dotenv from 'dotenv';
-
-const pdfParse = require('pdf-parse'); 
+import pdfParse from 'pdf-parse-new';
 
 dotenv.config();
 
@@ -44,70 +43,85 @@ export const generateProposal = async (req: Request, res: Response): Promise<any
   }
 };
 
-
-export const parseResume = async (req: Request, res: Response): Promise<any> => {
-  try {
-    const uploadedFile = (req as any).file;
-
-    if (!uploadedFile) {
-      return res.status(400).json({ success: false, error: 'No resume file provided.' });
+export const parseResume = async (req : Request, res : Response) : Promise<any> =>{
+  try{
+    if(!req.file){
+      return res.status(400).json({ success : false, message : "No resume uploaded" });
     }
+    const pdfData = await pdfParse(req.file.buffer);
+    const resumeText = pdfData.text;
 
-    console.log("Extracting text from PDF...");
-    const pdfData = await pdfParse(uploadedFile.buffer);
-    const rawText = pdfData.text;
+    if(!resumeText || resumeText.trim() === ""){
+      return res.status(400).json({ success : false, message : "could not read text"});
+    }
+    const systemPrompt = `You are an elite technical recruiter and AI career coach with 15+ years of experience hiring for fast-growing startups and top tech companies.
 
-    console.log("Sending text to Sarvam AI for analysis...");
-    const systemPrompt = `You are a strict data extraction AI. Analyze the resume text. 
-    Respond ONLY with a raw JSON object. Do not include markdown formatting, backticks, or introduction text.
-    Format exactly like this: {"summary": "2 sentence summary", "skills": ["skill1", "skill2"]}`;
+Your task is to analyze the applicant's resume text and extract key information into a strict JSON format.
 
-    const response = await aiClient.chat.completions({
-      model: "sarvam-30b", 
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: `RESUME TEXT:\n${rawText.substring(0, 4000)}` } 
-      ],
-      temperature: 0.1,
-      max_tokens: 1000,
+### STRICT RULES:
+- No hallucinations: Only extract information explicitly mentioned in the resume. 
+- Name fallback: If the full name cannot be clearly identified, use "Candidate".
+- Core Skills: Extract 6-8 Hard/Technical skills (programming languages, major frameworks, core technical stacks).
+- Additional Skills: Extract 4-6 Secondary skills (tools, platforms, methodologies like Agile, spoken languages, or highly relevant soft skills like Leadership).
+- Summary: Write a punchy, confident 2-sentence professional summary (max 70 words) highlighting their strongest experiences and key achievements.
+- Vibe: Choose exactly ONE: 'Startup Hustler', 'Corporate Guy', 'Academic / Researcher', or 'Creative Guy'.
+- Improvements: Generate 2 to 5 highly specific, actionable tips based ONLY on real flaws or gaps in this resume. 
+- Target Role Awareness: Infer or extract the most suitable target role based on the experience.
+
+### CRITICAL OUTPUT INSTRUCTION:
+Respond with valid JSON only. Do not include any explanations, reasoning, or markdown (no \`\`\`json). 
+
+### Required JSON Structure:
+{
+  "profile": {
+    "name": "Candidate's Full Name",
+    "target_role": "Inferred target role",
+    "core_skills": ["React", "Node.js", "TypeScript"],
+    "additional_skills": ["Git", "Agile", "Team Leadership", "AWS"],
+    "summary": "Punchy two-sentence professional summary here.",
+    "vibe": "Startup Hustle"
+  },
+  "improvements": [
+    "Specific actionable tip..."
+  ]
+}`;
+    
+    const response = await fetch(`${process.env.SARVAM_BASE_URL || "https://api.sarvamai.com"}/chat/completions`, {
+      method : 'POST',
+      headers :{
+        'Content-Type' : 'application/json',
+        'api-subscription-key' : process.env.SARVAM_API_KEY as string
+      },
+      body: JSON.stringify({
+        model : "sarvam-105b",
+        messages : [
+          { role : "system", content : systemPrompt },
+          { role : "user", content : `RESUME TEXT:\n${resumeText}` }
+        ],
+        temperature : 0.1,
+        max_tokens : 4096})
     });
 
-    const aiContent = response.choices[0]?.message?.content || '{}';
-    console.log("Raw AI Output:", aiContent); 
-    
-    const cleanJsonString = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
-    
-    let parsedData = { 
-      summary: "Experienced developer ready for new opportunities.", 
-      skills: ["JavaScript", "React", "Node.js"] // Fallback data
-    };
-
-    try {
-      const startIdx = cleanJsonString.indexOf('{');
-      const endIdx = cleanJsonString.lastIndexOf('}') + 1;
-      
-      if (startIdx !== -1 && endIdx !== -1) {
-        const jsonOnly = cleanJsonString.slice(startIdx, endIdx);
-        parsedData = JSON.parse(jsonOnly);
-      } else {
-        parsedData = JSON.parse(cleanJsonString);
-      }
-    } catch (parseError) {
-      console.warn("⚠️ AI returned invalid JSON format. Using fallback.", cleanJsonString);
-      // We don't throw an error here, we just let it use the fallback data!
+    const data = await response.json();
+    if (!response.ok || !data.choices) {
+      console.error("--- SARVAM API REJECTED THE REQUEST ---");
+      console.error(JSON.stringify(data, null, 2));
+      console.error("---------------------------------------");
+      return res.status(500).json({ 
+        success: false, 
+        message: "Sarvam AI API Error. Check backend terminal for details." 
+      });
     }
-    // ----------------------------------------------
 
-    res.json({ 
-      success: true, 
-      analysis: {
-        summary: parsedData.summary || "Experienced developer.",
-        skills: parsedData.skills || []
-      } 
-    });
+    let rawSarvamResponse = data.choices[0]?.message?.content;
 
-  } catch (error) {
-    console.error('Resume Parsing Error:', error);
-    res.status(500).json({ success: false, error: 'Failed to parse resume' });
+    rawSarvamResponse = rawSarvamResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const parsedData = JSON.parse(rawSarvamResponse);
+
+    res.json({success : true, data : parsedData});
   }
-};
+  catch(error){
+    console.error('Resume Parsing Error:', error);
+    res.status(500).json({ success : false, message : 'Failed to parse resume' });
+  }
+}
