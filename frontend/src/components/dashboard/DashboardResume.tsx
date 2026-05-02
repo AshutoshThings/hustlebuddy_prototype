@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Upload, FileText, Trash2, Sparkles, Loader2, Zap, Briefcase, Code2, RefreshCcw, CheckCircle2, AlertCircle, Play, X, UploadCloud } from 'lucide-react';
+import { Upload, FileText, Trash2, Sparkles, Loader2, Zap, Briefcase, Code2, RefreshCcw, CheckCircle2, AlertCircle, Play, UploadCloud } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardResume() {
@@ -9,8 +9,12 @@ export default function DashboardResume() {
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   
+  const [isLoading, setIsLoading] = useState(true); 
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  const user = JSON.parse(localStorage.getItem('hb_user') || '{"name": "Ashutosh", "id": 4}');
+
   const [aiAnalysis, setAiAnalysis] = useState({
     profile: {
       name: "",
@@ -23,25 +27,46 @@ export default function DashboardResume() {
     improvements: [] as string[]
   });
 
+  // ==========================================
+  // INITIAL FETCH: Check DB for existing profile
+  // ==========================================
   useEffect(() => {
-    const savedContext = localStorage.getItem('hb_resume_context');
-    if (savedContext) {
-      const parsed = JSON.parse(savedContext);
-      setAiAnalysis(parsed);
-      setUploadPhase('success');
-    }
-  }, []);
+    const fetchExistingProfile = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profile/get-profile/${user.id}`);
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.profile) {
+            setAiAnalysis({
+              profile: {
+                name: result.profile.name || "",
+                target_role: result.profile.target_role || "",
+                summary: result.profile.summary || "",
+                core_skills: result.profile.core_skills || [],
+                additional_skills: result.profile.additional_skills || [],
+                vibe: result.profile.vibe || "",
+              },
+              improvements: result.profile.improvements || []
+            });
+            setUploadPhase('success');
+            // Optional: Keep local storage in sync as a backup
+            localStorage.setItem('hb_resume_context', JSON.stringify(result.profile));
+          }
+        }
+      } catch (err) {
+        console.log("No existing profile found or server error. Defaulting to upload screen.");
+      } finally {
+        setIsLoading(false); // Done checking, reveal the UI
+      }
+    };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+    fetchExistingProfile();
+  }, [user.id]);
 
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
+  // --- Drag & Drop & Validation Handlers ---
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -65,14 +90,10 @@ export default function DashboardResume() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      validateAndSetFile(e.target.files[0]);
-    }
+    if (e.target.files && e.target.files[0]) validateAndSetFile(e.target.files[0]);
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
-  };
+  const triggerFileInput = () => fileInputRef.current?.click();
 
   const cancelUpload = () => {
     setFile(null);
@@ -81,6 +102,9 @@ export default function DashboardResume() {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  // ==========================================
+  // PROCESS RESUME: Parse -> Save -> Render
+  // ==========================================
   const processResume = async () => {
     if (!file) return;
     setError(null);
@@ -93,33 +117,57 @@ export default function DashboardResume() {
     setTimeout(async () => {
       setProcessingStatus('analyzing'); 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ai/parse-resume`, {
+        // 1. Call AI to parse
+        const aiResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/ai/parse-resume`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('hb_token')}`
-          },
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('hb_token')}` },
           body: formData
         });
 
-        const data = await response.json();
+        const parseData = await aiResponse.json();
 
-        if (data.success && data.data) {
-          setAiAnalysis(data.data);
-          setUploadPhase('success');
-          localStorage.setItem('hb_resume_context', JSON.stringify(data.data));
+        if (parseData.success && parseData.data) {
+          
+          // 2. WAIT FOR DATABASE SAVE
+          const saveResponse = await fetch(`${import.meta.env.VITE_API_BASE_URL}/profile/save-profile`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('hb_token')}`
+            },
+            body: JSON.stringify({ 
+              profileData: parseData.data,
+              userId: user.id 
+            })
+          });
+
+          const dbResult = await saveResponse.json();
+
+          if (dbResult.success) {
+            // 3. ONLY UPDATE UI IF SAVE WAS SUCCESSFUL
+            setAiAnalysis(parseData.data);
+            setUploadPhase('success');
+            localStorage.setItem('hb_resume_context', JSON.stringify(parseData.data));
+            console.log("✅ Data parsed and securely saved to Vault.");
+          } else {
+            throw new Error(dbResult.error || "Failed to persist data to database.");
+          }
+
         } else {
-          setError(data.message || "Failed to parse resume.");
+          setError(parseData.message || "Failed to parse resume.");
           setUploadPhase('confirming'); 
         }
-      } catch (err) {
-        console.error("Upload error:", err);
-        setError("Network error. Please check your connection and try again.");
+      } catch (err: any) {
+        console.error("Pipeline error:", err);
+        setError(err.message || "Network error. Please check your connection and try again.");
         setUploadPhase('confirming');
       }
     }, 800); 
   };
 
   const clearResume = () => {
+    // Note: This currently only clears the local UI. 
+    // You'd need a DELETE route on your backend to clear the DB row entirely.
     setFile(null);
     setUploadPhase('idle');
     setError(null);
@@ -129,6 +177,18 @@ export default function DashboardResume() {
     });
     localStorage.removeItem('hb_resume_context');
   };
+
+  // ==========================================
+  // INITIAL LOADING SCREEN
+  // ==========================================
+  if (isLoading) {
+    return (
+      <div className="flex h-[80vh] flex-col items-center justify-center bg-slate-50">
+        <Loader2 className="animate-spin text-indigo-500 mb-4" size={32} />
+        <p className="text-sm font-medium text-slate-500 tracking-tight">Syncing with Vault...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-[1400px] mx-auto bg-slate-50 text-slate-900 min-h-screen font-sans overflow-x-hidden">
@@ -262,7 +322,7 @@ export default function DashboardResume() {
             <p className="text-slate-500 font-light text-sm transition-all max-w-sm mx-auto">
               {processingStatus === 'uploading' 
                 ? 'Securely transferring your resume.' 
-                : 'Sarvam Arya is reading your PDF and extracting your core profile.'}
+                : 'Sarvam Arya is reading your PDF and saving to the Vault.'}
             </p>
 
             <div className="w-56 h-1.5 bg-slate-100 rounded-full mx-auto mt-6 overflow-hidden">
@@ -308,7 +368,7 @@ export default function DashboardResume() {
                     <button 
                       onClick={clearResume}
                       className="p-2.5 bg-red-50 border border-red-100 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
-                      title="Delete Context"
+                      title="Clear Context"
                     >
                       <Trash2 size={16} />
                     </button>
