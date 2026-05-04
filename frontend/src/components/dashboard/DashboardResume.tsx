@@ -148,7 +148,7 @@ export default function DashboardResume() {
             setAiAnalysis(parseData.data);
             setUploadPhase('success');
             localStorage.setItem('hb_resume_context', JSON.stringify(parseData.data));
-            console.log("✅ Data parsed and securely saved to Vault.");
+            console.log("Data parsed and securely saved to Vault.");
           } else {
             throw new Error(dbResult.error || "Failed to persist data to database.");
           }

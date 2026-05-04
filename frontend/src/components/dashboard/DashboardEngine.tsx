@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, Copy, Wand2, History, ChevronRight, Zap } from 'lucide-react';
+import { Sparkles, History, ChevronRight, Zap } from 'lucide-react';
 
 export default function DashboardEngine() {
   const [jd, setJd] = useState("");
@@ -47,9 +47,9 @@ export default function DashboardEngine() {
       {/* Main Workbench */}
       <div className="flex-1 flex flex-col p-8 border-r border-slate-100">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl font-bold tracking-tight">Drafting Workbench</h2>
+          <h2 className="text-xl font-bold tracking-tight">Cover Letter Drafting Workbench</h2>
           <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[11px] font-bold border border-indigo-100">
-            <Zap size={12} fill="currentColor" /> 84 Credits Remaining
+            <Zap size={12} fill="currentColor" /> 3 Credits Remaining
           </div>
         </div>
 
@@ -65,7 +65,7 @@ export default function DashboardEngine() {
           </div>
           
           <div className="flex flex-col relative">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Sarvam Output</label>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Personalized Cover Letter</label>
             <div className="flex-1 p-6 bg-white border border-slate-200 rounded-2xl text-sm leading-relaxed text-slate-700 overflow-y-auto font-medium whitespace-pre-wrap">
               {output || <span className="text-slate-300 italic">Click generate to start...</span>}
             </div>
@@ -87,7 +87,7 @@ export default function DashboardEngine() {
             className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
           >
             {loading ? 'Synthesizing...' : 'Generate Personalized Proposal'}
-            <Wand2 size={18} />
+            
           </button>
         </div>
       </div>
