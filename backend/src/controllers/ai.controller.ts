@@ -28,7 +28,7 @@ export const generateProposal = async (req: Request, res: Response): Promise<any
         { role: "user", content: userPrompt }
       ],
       temperature: 0.7,
-      max_tokens: 2048,
+      max_tokens: 4096,
     });
 
     console.log("RAW SARVAM RESPONSE:", JSON.stringify(response, null, 2));
