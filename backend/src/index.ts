@@ -10,7 +10,8 @@ import applicationRoutes from './routes/application.routes';
 //import jobs from './routes/jobs.routes';
 import profileRoutes from './routes/profile.routes';
 dotenv.config();
-
+console.log('DATABASE_URL present:', !!process.env.DATABASE_URL);
+console.log('DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 30));
 const app = express();
 const port = process.env.PORT || 3000;
 
