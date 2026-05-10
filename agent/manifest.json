@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "HustleBuddy Agent",
+  "version": "1.0",
+  "action": { "default_popup": "popup.html" },
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://localhost:3000/*"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

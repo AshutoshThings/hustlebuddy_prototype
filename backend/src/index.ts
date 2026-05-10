@@ -7,7 +7,7 @@ import healthRoutes from './routes/health.routes';
 import authRoutes from './routes/auth.routes';
 import aiRoutes from './routes/ai.routes';
 import applicationRoutes from './routes/application.routes';
-import jobs from './routes/jobs.routes';
+//import jobs from './routes/jobs.routes';
 import profileRoutes from './routes/profile.routes';
 dotenv.config();
 
@@ -23,7 +23,7 @@ app.use('/health', healthRoutes);
 app.use('/auth', authRoutes);
 app.use('/ai', aiRoutes); 
 app.use('/applications', applicationRoutes);
-app.use('/jobs', jobs);
+//app.use('/jobs', jobs);
 app.use('/profile', profileRoutes);
 
 // Server Start 
