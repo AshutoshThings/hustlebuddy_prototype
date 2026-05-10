@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Upload, FileText, Trash2, Sparkles, Loader2, Zap, Briefcase, Code2, RefreshCcw, CheckCircle2, AlertCircle, Play, UploadCloud } from 'lucide-react';
+import { FileText, Trash2, Sparkles, Loader2, Zap, Briefcase, Code2, RefreshCcw, CheckCircle2, AlertCircle, Play, UploadCloud } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function DashboardResume() {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sparkles, History, ChevronRight, Zap } from 'lucide-react';
+import { Sparkles, History, ChevronRight, Zap, Copy } from 'lucide-react';
 
 export default function DashboardEngine() {
   const [jd, setJd] = useState("");

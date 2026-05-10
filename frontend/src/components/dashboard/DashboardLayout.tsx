@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Home, Sparkles, Database, LogOut, FileUser, Briefcase, Bell, Command } from 'lucide-react';
+
+import { Home, Sparkles, Database, LogOut,FileUser, Briefcase,Bell, Command } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
